@@ -21,6 +21,7 @@ except ModuleNotFoundError:
 
 # import any pure python here
 from .preprocess import preprocess
+from .postprocessor import postprocessor
 
 
 #

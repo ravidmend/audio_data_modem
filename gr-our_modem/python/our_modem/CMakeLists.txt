@@ -19,7 +19,7 @@ add_subdirectory(bindings)
 ########################################################################
 # Install python sources
 ########################################################################
-gr_python_install(FILES __init__.py preprocess.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/our_modem)
+gr_python_install(FILES __init__.py preprocess.py postprocessor.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/our_modem)
 
 ########################################################################
 # Handle the unit tests

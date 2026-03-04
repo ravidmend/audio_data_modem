@@ -6,4 +6,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 install(FILES
-    our_modem_preprocess.block.yml DESTINATION share/gnuradio/grc/blocks)
+    our_modem_preprocess.block.yml
+    our_modem_postprocessor.block.yml DESTINATION share/gnuradio/grc/blocks)
