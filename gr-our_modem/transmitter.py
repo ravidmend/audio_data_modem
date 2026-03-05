@@ -11,6 +11,7 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
+from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
@@ -60,7 +61,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.t = t = 0.001
+        self.t = t = 0.01
         self.samp_rate = samp_rate = 32000
         self.my_string = my_string = "abcde"*100
 
@@ -69,14 +70,27 @@ class transmitter(gr.top_block, Qt.QWidget):
         ##################################################
 
         self.our_modem_preprocess_0 = our_modem.preprocess(t, samp_rate, my_string)
-        self.our_modem_postprocessor_0_0_0 = our_modem.postprocessor(t, samp_rate, 0.1, 0.333)
+        self.our_modem_postprocessor_0_0 = our_modem.postprocessor(t, samp_rate, 0.1, 0.333)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_float*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
+        self.analog_wfm_tx_0 = analog.wfm_tx(
+        	audio_rate=samp_rate,
+        	quad_rate=samp_rate,
+        	tau=(75e-6),
+        	max_dev=75e3,
+        	fh=(-1.0),
+        )
+        self.analog_wfm_rcv_0 = analog.wfm_rcv(
+        	quad_rate=samp_rate,
+        	audio_decimation=1,
+        )
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_throttle2_0, 0), (self.our_modem_postprocessor_0_0_0, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.our_modem_postprocessor_0_0, 0))
+        self.connect((self.analog_wfm_tx_0, 0), (self.analog_wfm_rcv_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.analog_wfm_tx_0, 0))
         self.connect((self.our_modem_preprocess_0, 0), (self.blocks_throttle2_0, 0))
 
 

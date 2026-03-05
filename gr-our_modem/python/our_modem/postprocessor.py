@@ -126,7 +126,7 @@ class postprocessor(gr.sync_block):
             
         return len(input_items[0])
     
-    def work(self, input_items, output_items):
+    def BASIC_TASK3_BUT_IT_work(self, input_items, output_items):
         in0 = input_items[0]
         sps = int(self.t*self.fs)
         self.queue.extend(in0)
@@ -158,6 +158,38 @@ class postprocessor(gr.sync_block):
             
         return len(input_items[0])
 
+
+    def work(self, input_items, output_items):
+        in0 = input_items[0]
+        sps = int(self.t*self.fs)
+        self.queue.extend(in0)
+        if (self.did_removed_preamble == False):
+            for i in range(sps):
+                self.queue.popleft()
+            # while(True):
+            #     if(self.queue[0] <0):
+            #         self.queue.popleft()
+            #     else:
+            #         break
+            self.did_removed_preamble = True
+
+        while(len(self.queue) > (3 * sps)):
+
+            dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
+            bit = postprocessor.decide_bit(dequeued_items,sps)
+            self.bits.append(bit)
+
+            if (len(self.bits) == 8):
+                output_str = self.bits_to_string(self.bits)
+                print(f"{output_str}")
+                self.bits = []
+    
+
+            
+        return len(input_items[0])
+    
+
+
     @staticmethod
     def bits_to_string(bits_array):
         output_str = ""
@@ -170,9 +202,28 @@ class postprocessor(gr.sync_block):
         return output_str
 
     @staticmethod
-    def decide_bit(samples_array,sps):
+    def BASIC_TASK3_BUT_IT_work_decide_bit(samples_array,sps):
         if (samples_array[int(1.5*sps)] == 1):
             return 1
         else:
             return 0
+        
+    @staticmethod
+    def decide_bit(samples_array,sps): 
+        binary_arr = (samples_array>0).astype(int)
+        # print(f"sum {sum(binary_arr)}")
+        if(sum(binary_arr)>(1.5*sps)):
+            return 1
+        else:
+            return 0
+
+
+        # sliced = samples_array[0:2*sps]
+        
+        # window = np.concatenate((np.full((sps), 1), np.full((sps), -1)))
+        # res = sum(np.multiply(sliced,window)) 
+        # print(f"res is {res}")
+        # if res<10:
+        #     return 1
+        # return 0
 
