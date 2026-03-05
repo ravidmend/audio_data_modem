@@ -25,164 +25,50 @@ class postprocessor(gr.sync_block):
         self.bits = []
         self.queue = deque([])
         self.did_removed_preamble = False
+
+        self.detection_mode=True
+
         gr.sync_block.__init__(self,
             name="postprocessor",
             in_sig=[np.float32, ],
             out_sig=None)
 
 
-    def ravid_work(self, input_items, output_items):
-        in0 = input_items[0]
-        print(f"input samples:{input_items[0]}")
-        # <+signal processing here+>
-        sps = int(self.t*self.fs)
-
-        window = np.concatenate(np.full(sps, 1), np.full(sps, -1))
-        diff = np.convolve(in0, window, mode='full')
-
-
-        threshold = 0.15 * 2 * sps * 0.5
-
-        # threshold = diff[sps]
-        bits = []
-        for peak in diff[3*sps:len(diff):3*sps]:
-            bit = 1
-            if peak>threshold:
-                bit = 0
-            bits.append(bit)
-
-        #print(bits[0:min(100, len(bits)-1)])
-        output_str = self.bits_to_string(bits)
-        
-        print(output_str)
-            
-        return len(input_items[0])
-    
-
-    def old_work(self, input_items, output_items):
-        in0 = input_items[0]
-        window = np.concatenate((np.full((int(self.t*self.fs)), 1), np.full((int(self.t*self.fs)), -1)))
-        diff = np.correlate(in0, window, mode='full')
-
-        peak_indices, _ = find_peaks(diff)
-        print(peak_indices[0:min(100, len(peak_indices)-1)])
-
-        peak_indices = np.concatenate(([0], peak_indices))
-        
-        
-        for peak_idx in peak_indices:
-            
-            if peak_idx < len(diff):
-                bit = 1
-                if input_items[0][int(peak_idx + 0.5*int(self.t*self.fs))] < 0:
-                    bit = 0
-                self.bits.append(bit)
-            
-            if (len(self.bits) == 8):
-                output_str = self.bits_to_string(self.bits)
-                print(f"char is {output_str}")
-                self.bits = []
-            
-        return len(input_items[0])
-
-
-    def BABOON_work(self, input_items, output_items):
-        in0 = input_items[0]
-        sps = int(self.t*self.fs)
-        
-        for x in input_items[0]:
-            if (x>0):
-                x=1
-            else:
-                x=-1
-
-        print(f"size:{len(in0)},first_sample:{in0[0:30]}")
-        diff = np.diff(in0)
-
-        # peak_indices, _ = find_peaks(diff)
-        # print(peak_indices[0:min(100, len(peak_indices)-1)])
-
-        # peak_indices = np.concatenate(([0], peak_indices))
-        
-        
-        for index,dif in enumerate(diff):
-            if(dif == -2):
-                # print(f"index is{index}")
-                bit = 1
-                # for i in range(3,(int(1.3*sps))):
-                #     if((index + i)<len(in0) and in0[index + i] != -1):
-                #         bit = 1
-                #         break
-                if(in0[index -(sps+1)] == -1):
-                    bit = 0
-
-                
-                self.bits.append(bit)
-            
-            if (len(self.bits) == 8):
-                output_str = self.bits_to_string(self.bits)
-                print(f"char is {output_str}")
-                self.bits = []
-            
-        return len(input_items[0])
-    
-    def BASIC_TASK3_BUT_IT_work(self, input_items, output_items):
-        in0 = input_items[0]
-        sps = int(self.t*self.fs)
-        self.queue.extend(in0)
-        if (self.did_removed_preamble == False):
-            # for i in range(sps): 
-            while(True):
-                if(self.queue[0] == -1):
-                    self.queue.popleft()
-                else:
-                    break
-            self.did_removed_preamble = True
-
-        while(len(self.queue) > (3 * sps)):
-            dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
-            bit = postprocessor.decide_bit(dequeued_items,sps)
-            self.bits.append(bit)
-
-            if (len(self.bits) == 8):
-                output_str = self.bits_to_string(self.bits)
-                print(f"{output_str}")
-                self.bits = []
-        
-        # for x in input_items[0]:
-        #     if (x>0):
-        #         x=1
-        #     else:
-        #         x=-1
-
-            
-        return len(input_items[0])
-
-
     def work(self, input_items, output_items):
         in0 = input_items[0]
         sps = int(self.t*self.fs)
-        self.queue.extend(in0)
-        if (self.did_removed_preamble == False):
-            for i in range(sps):
-                self.queue.popleft()
-            # while(True):
-            #     if(self.queue[0] <0):
+        
+        if (self.detection_mode==True):
+            window = np.full((sps), -1)
+            correlation = np.correlate(in0, window, mode='full')
+
+            peaks,_ = find_peaks(correlation,height = 0.15*sps*0.2)
+            # print(correlation[300:700])
+            if len(peaks) != 0:
+                print(69)
+                starting_index = peaks[0]
+                starting_index = 320
+                print(f"startingindex {starting_index}")
+                in0 = in0[starting_index:len(in0)]
+                self.detection_mode=False
+
+        if (self.detection_mode==False):
+            self.queue.extend(in0)
+            # if (self.did_removed_preamble == False):
+            #     for i in range(sps):
             #         self.queue.popleft()
-            #     else:
-            #         break
-            self.did_removed_preamble = True
+            #     self.did_removed_preamble = True
 
-        while(len(self.queue) > (3 * sps)):
+            while(len(self.queue) > (3 * sps)):
+                
+                dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
+                bit = postprocessor.decide_bit(dequeued_items,sps)
+                self.bits.append(bit)
 
-            dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
-            bit = postprocessor.decide_bit(dequeued_items,sps)
-            self.bits.append(bit)
-
-            if (len(self.bits) == 8):
-                output_str = self.bits_to_string(self.bits)
-                print(f"{output_str}")
-                self.bits = []
+                if (len(self.bits) == 8):
+                    output_str = self.bits_to_string(self.bits)
+                    print(f"{output_str}")
+                    self.bits = []
     
 
             
@@ -201,18 +87,11 @@ class postprocessor(gr.sync_block):
             output_str += chr(ch)
         return output_str
 
-    @staticmethod
-    def BASIC_TASK3_BUT_IT_work_decide_bit(samples_array,sps):
-        if (samples_array[int(1.5*sps)] == 1):
-            return 1
-        else:
-            return 0
         
     @staticmethod
     def decide_bit(samples_array,sps): 
         filtered_samples_array = postprocessor.noise_smoothing(samples_array,sps)
         binary_arr = (filtered_samples_array>0).astype(int)
-        # print(f"sum {sum(binary_arr)}")
         if(sum(binary_arr)>(1.5*sps)):
             return 1
         else:
@@ -220,20 +99,6 @@ class postprocessor(gr.sync_block):
 
     @staticmethod
     def noise_smoothing(samples_array,sps): 
-        #works but i try better
-        # window = np.full((sps), 1) / sps
-        # samples_array[0:sps] = np.convolve(samples_array[0:sps], window, mode='same')
-        # samples_array[sps:2*sps] = np.convolve(samples_array[sps:2*sps], window, mode='same')
-        # samples_array[2*sps:3*sps] = np.convolve(samples_array[2*sps:3*sps], window, mode='same')
-        # return samples_array
-
-        #bit worst
-        # samples_array[0:sps] = np.mean(samples_array[0:sps])
-        # samples_array[sps:2*sps] = np.mean(samples_array[sps:2*sps])
-        # samples_array[2*sps:3*sps] = np.mean(samples_array[2*sps:3*sps])
-        # return samples_array
-
-        #works best
         window = np.full((sps), 1) / sps
         samples_array = np.convolve(samples_array, window, mode='same')
         return samples_array

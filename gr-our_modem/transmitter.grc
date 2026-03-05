@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"why_are_you_gay?"'
+    value: '"why_are_you_gay?"*10'
   states:
     bus_sink: false
     bus_source: false
@@ -74,7 +74,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '2'
+    amp: '1.5'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
