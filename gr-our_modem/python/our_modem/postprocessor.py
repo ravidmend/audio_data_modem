@@ -210,20 +210,31 @@ class postprocessor(gr.sync_block):
         
     @staticmethod
     def decide_bit(samples_array,sps): 
-        binary_arr = (samples_array>0).astype(int)
+        filtered_samples_array = postprocessor.noise_smoothing(samples_array,sps)
+        binary_arr = (filtered_samples_array>0).astype(int)
         # print(f"sum {sum(binary_arr)}")
         if(sum(binary_arr)>(1.5*sps)):
             return 1
         else:
             return 0
 
+    @staticmethod
+    def noise_smoothing(samples_array,sps): 
+        #works but i try better
+        # window = np.full((sps), 1) / sps
+        # samples_array[0:sps] = np.convolve(samples_array[0:sps], window, mode='same')
+        # samples_array[sps:2*sps] = np.convolve(samples_array[sps:2*sps], window, mode='same')
+        # samples_array[2*sps:3*sps] = np.convolve(samples_array[2*sps:3*sps], window, mode='same')
+        # return samples_array
 
-        # sliced = samples_array[0:2*sps]
-        
-        # window = np.concatenate((np.full((sps), 1), np.full((sps), -1)))
-        # res = sum(np.multiply(sliced,window)) 
-        # print(f"res is {res}")
-        # if res<10:
-        #     return 1
-        # return 0
+        #bit worst
+        # samples_array[0:sps] = np.mean(samples_array[0:sps])
+        # samples_array[sps:2*sps] = np.mean(samples_array[sps:2*sps])
+        # samples_array[2*sps:3*sps] = np.mean(samples_array[2*sps:3*sps])
+        # return samples_array
+
+        #works best
+        window = np.full((sps), 1) / sps
+        samples_array = np.convolve(samples_array, window, mode='same')
+        return samples_array
 
