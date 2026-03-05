@@ -33,6 +33,18 @@ options:
     state: enabled
 
 blocks:
+- name: my_string
+  id: variable
+  parameters:
+    comment: ''
+    value: '"abcde"*100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 128.0]
+    rotation: 0
+    state: enabled
 - name: samp_rate
   id: variable
   parameters:
@@ -42,7 +54,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [176, 104.0]
+    rotation: 0
+    state: enabled
+- name: t
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.001'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 112.0]
     rotation: 0
     state: enabled
 - name: analog_wfm_rcv_0
@@ -59,9 +83,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [832, 120.0]
+    coordinate: [840, 240.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: analog_wfm_tx_0
   id: analog_wfm_tx
   parameters:
@@ -79,9 +103,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 120.0]
+    coordinate: [568, 272.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_throttle2_0
   id: blocks_throttle2
   parameters:
@@ -100,7 +124,58 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 224.0]
+    coordinate: [336, 464.0]
+    rotation: 0
+    state: enabled
+- name: our_modem_postprocessor_0
+  id: our_modem_postprocessor
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fs: samp_rate
+    sensitivity: '0.1'
+    t: t
+    timeout: '0.333'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [896, 504.0]
+    rotation: 0
+    state: disabled
+- name: our_modem_postprocessor_0_0
+  id: our_modem_postprocessor
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fs: samp_rate
+    sensitivity: '0.1'
+    t: t
+    timeout: '0.333'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1152, 40.0]
+    rotation: 0
+    state: disabled
+- name: our_modem_postprocessor_0_0_0
+  id: our_modem_postprocessor
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fs: samp_rate
+    sensitivity: '0.1'
+    t: t
+    timeout: '0.333'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [552, 512.0]
     rotation: 0
     state: enabled
 - name: our_modem_preprocess_0
@@ -110,15 +185,15 @@ blocks:
     alias: ''
     comment: ''
     fs: samp_rate
-    input_str: '"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"'
+    input_str: my_string
     maxoutbuf: '0'
     minoutbuf: '0'
-    t: '0.1'
+    t: t
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [80, 216.0]
+    coordinate: [72, 392.0]
     rotation: 0
     state: enabled
 - name: qtgui_sink_x_0_0
@@ -147,9 +222,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1128, 112.0]
+    coordinate: [1304, 264.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_sink_x_0_0_0
   id: qtgui_sink_x
   parameters:
@@ -176,7 +251,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [896, 320.0]
+    coordinate: [1000, 456.0]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -273,17 +348,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 232.0]
+    coordinate: [1112, 408.0]
     rotation: 0
     state: disabled
 
 connections:
+- [analog_wfm_rcv_0, '0', our_modem_postprocessor_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_sink_x_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_time_sink_x_0, '0']
 - [analog_wfm_tx_0, '0', analog_wfm_rcv_0, '0']
 - [analog_wfm_tx_0, '0', qtgui_sink_x_0_0_0, '0']
 - [blocks_throttle2_0, '0', analog_wfm_tx_0, '0']
-- [blocks_throttle2_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_throttle2_0, '0', our_modem_postprocessor_0, '0']
+- [blocks_throttle2_0, '0', our_modem_postprocessor_0_0_0, '0']
 - [our_modem_preprocess_0, '0', blocks_throttle2_0, '0']
 
 metadata:
