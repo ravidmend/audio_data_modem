@@ -126,7 +126,7 @@ class postprocessor(gr.sync_block):
             
         return len(input_items[0])
     
-    def work(self, input_items, output_items):
+    def BASIC_TASK3_BUT_IT_work(self, input_items, output_items):
         in0 = input_items[0]
         sps = int(self.t*self.fs)
         self.queue.extend(in0)
@@ -158,6 +158,38 @@ class postprocessor(gr.sync_block):
             
         return len(input_items[0])
 
+
+    def work(self, input_items, output_items):
+        in0 = input_items[0]
+        sps = int(self.t*self.fs)
+        self.queue.extend(in0)
+        if (self.did_removed_preamble == False):
+            for i in range(sps):
+                self.queue.popleft()
+            # while(True):
+            #     if(self.queue[0] <0):
+            #         self.queue.popleft()
+            #     else:
+            #         break
+            self.did_removed_preamble = True
+
+        while(len(self.queue) > (3 * sps)):
+
+            dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
+            bit = postprocessor.decide_bit(dequeued_items,sps)
+            self.bits.append(bit)
+
+            if (len(self.bits) == 8):
+                output_str = self.bits_to_string(self.bits)
+                print(f"{output_str}")
+                self.bits = []
+    
+
+            
+        return len(input_items[0])
+    
+
+
     @staticmethod
     def bits_to_string(bits_array):
         output_str = ""
@@ -170,9 +202,39 @@ class postprocessor(gr.sync_block):
         return output_str
 
     @staticmethod
-    def decide_bit(samples_array,sps):
+    def BASIC_TASK3_BUT_IT_work_decide_bit(samples_array,sps):
         if (samples_array[int(1.5*sps)] == 1):
             return 1
         else:
             return 0
+        
+    @staticmethod
+    def decide_bit(samples_array,sps): 
+        filtered_samples_array = postprocessor.noise_smoothing(samples_array,sps)
+        binary_arr = (filtered_samples_array>0).astype(int)
+        # print(f"sum {sum(binary_arr)}")
+        if(sum(binary_arr)>(1.5*sps)):
+            return 1
+        else:
+            return 0
+
+    @staticmethod
+    def noise_smoothing(samples_array,sps): 
+        #works but i try better
+        # window = np.full((sps), 1) / sps
+        # samples_array[0:sps] = np.convolve(samples_array[0:sps], window, mode='same')
+        # samples_array[sps:2*sps] = np.convolve(samples_array[sps:2*sps], window, mode='same')
+        # samples_array[2*sps:3*sps] = np.convolve(samples_array[2*sps:3*sps], window, mode='same')
+        # return samples_array
+
+        #bit worst
+        # samples_array[0:sps] = np.mean(samples_array[0:sps])
+        # samples_array[sps:2*sps] = np.mean(samples_array[sps:2*sps])
+        # samples_array[2*sps:3*sps] = np.mean(samples_array[2*sps:3*sps])
+        # return samples_array
+
+        #works best
+        window = np.full((sps), 1) / sps
+        samples_array = np.convolve(samples_array, window, mode='same')
+        return samples_array
 
