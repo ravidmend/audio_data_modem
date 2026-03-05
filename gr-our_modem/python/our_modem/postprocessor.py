@@ -26,6 +26,8 @@ class postprocessor(gr.sync_block):
         self.queue = deque([])
         self.did_removed_preamble = False
 
+        self.detection_mode=True
+
         gr.sync_block.__init__(self,
             name="postprocessor",
             in_sig=[np.float32, ],
@@ -35,22 +37,38 @@ class postprocessor(gr.sync_block):
     def work(self, input_items, output_items):
         in0 = input_items[0]
         sps = int(self.t*self.fs)
-        self.queue.extend(in0)
-        if (self.did_removed_preamble == False):
-            for i in range(sps):
-                self.queue.popleft()
-            self.did_removed_preamble = True
+        
+        if (self.detection_mode==True):
+            window = np.full((sps), -1)
+            correlation = np.correlate(in0, window, mode='full')
 
-        while(len(self.queue) > (3 * sps)):
-            
-            dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
-            bit = postprocessor.decide_bit(dequeued_items,sps)
-            self.bits.append(bit)
+            peaks,_ = find_peaks(correlation,height = 0.15*sps*0.2)
+            # print(correlation[300:700])
+            if len(peaks) != 0:
+                print(69)
+                starting_index = peaks[0]
+                starting_index = 320
+                print(f"startingindex {starting_index}")
+                in0 = in0[starting_index:len(in0)]
+                self.detection_mode=False
 
-            if (len(self.bits) == 8):
-                output_str = self.bits_to_string(self.bits)
-                print(f"{output_str}")
-                self.bits = []
+        if (self.detection_mode==False):
+            self.queue.extend(in0)
+            # if (self.did_removed_preamble == False):
+            #     for i in range(sps):
+            #         self.queue.popleft()
+            #     self.did_removed_preamble = True
+
+            while(len(self.queue) > (3 * sps)):
+                
+                dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
+                bit = postprocessor.decide_bit(dequeued_items,sps)
+                self.bits.append(bit)
+
+                if (len(self.bits) == 8):
+                    output_str = self.bits_to_string(self.bits)
+                    print(f"{output_str}")
+                    self.bits = []
     
 
             

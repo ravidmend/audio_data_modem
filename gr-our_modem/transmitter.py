@@ -64,7 +64,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         ##################################################
         self.t = t = 0.01
         self.samp_rate = samp_rate = 32000
-        self.my_string = my_string = "why_are_you_gay?"
+        self.my_string = my_string = "why_are_you_gay?"*10
 
         ##################################################
         # Blocks
@@ -103,7 +103,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         	quad_rate=samp_rate,
         	audio_decimation=1,
         )
-        self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 2, 0)
+        self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 1.5, 0)
 
 
         ##################################################
