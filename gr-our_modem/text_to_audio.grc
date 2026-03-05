@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"why_are_you_gay?"*10'
+    value: '"abcde"*10'
   states:
     bus_sink: false
     bus_source: false
@@ -143,8 +143,8 @@ blocks:
     coordinate: [920, 256.0]
     rotation: 0
     state: disabled
-- name: blocks_complex_to_real_0
-  id: blocks_complex_to_real
+- name: blocks_complex_to_float_0
+  id: blocks_complex_to_float
   parameters:
     affinity: ''
     alias: ''
@@ -156,7 +156,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 280.0]
+    coordinate: [600, 272.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -186,20 +186,20 @@ blocks:
     affinity: ''
     alias: ''
     append: 'False'
-    bits_per_sample1: FORMAT_PCM_16
+    bits_per_sample1: FORMAT_PCM_32
     bits_per_sample2: FORMAT_PCM_16
     bits_per_sample3: FORMAT_VORBIS
     bits_per_sample4: FORMAT_PCM_16
     comment: ''
-    file: why_are_you_gay_audio
+    file: abcde_10_audio
     format: FORMAT_WAV
-    nchan: '1'
+    nchan: '2'
     samp_rate: samp_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [792, 304.0]
+    coordinate: [840, 264.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -457,10 +457,11 @@ connections:
 - [analog_wfm_rcv_0, '0', our_modem_postprocessor_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_sink_x_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_time_sink_x_0, '0']
-- [analog_wfm_tx_0, '0', blocks_complex_to_real_0, '0']
+- [analog_wfm_tx_0, '0', blocks_complex_to_float_0, '0']
 - [analog_wfm_tx_0, '0', qtgui_sink_x_0_0_0, '0']
 - [blocks_add_xx_0, '0', analog_wfm_rcv_0, '0']
-- [blocks_complex_to_real_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_wavfile_sink_0, '1']
 - [blocks_throttle2_0, '0', analog_wfm_tx_0, '0']
 - [blocks_throttle2_0, '0', our_modem_postprocessor_0, '0']
 - [blocks_throttle2_0, '0', our_modem_postprocessor_0_0_0, '0']

@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"why_are_you_gay?"*10'
+    value: '"abcde"*10'
   states:
     bus_sink: false
     bus_source: false
@@ -85,7 +85,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 416.0]
+    coordinate: [728, 416.0]
     rotation: 0
     state: enabled
 - name: analog_wfm_rcv_0
@@ -140,7 +140,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [864, 296.0]
+    coordinate: [808, 304.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0

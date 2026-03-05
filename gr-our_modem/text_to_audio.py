@@ -63,7 +63,7 @@ class text_to_audio(gr.top_block, Qt.QWidget):
         ##################################################
         self.t = t = 0.01
         self.samp_rate = samp_rate = 32000
-        self.my_string = my_string = "why_are_you_gay?"*10
+        self.my_string = my_string = "abcde"*10
 
         ##################################################
         # Blocks
@@ -71,14 +71,14 @@ class text_to_audio(gr.top_block, Qt.QWidget):
 
         self.our_modem_preprocess_0 = our_modem.preprocess(t, samp_rate, my_string)
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(
-            'why_are_you_gay_audio',
-            1,
+            'abcde_10_audio',
+            2,
             samp_rate,
             blocks.FORMAT_WAV,
-            blocks.FORMAT_PCM_16,
+            blocks.FORMAT_PCM_32,
             False
             )
-        self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
+        self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
         self.analog_wfm_tx_0 = analog.wfm_tx(
         	audio_rate=samp_rate,
         	quad_rate=samp_rate,
@@ -91,8 +91,9 @@ class text_to_audio(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_wfm_tx_0, 0), (self.blocks_complex_to_real_0, 0))
-        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_wavfile_sink_0, 0))
+        self.connect((self.analog_wfm_tx_0, 0), (self.blocks_complex_to_float_0, 0))
+        self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_wavfile_sink_0, 1))
+        self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.our_modem_preprocess_0, 0), (self.analog_wfm_tx_0, 0))
 
 
