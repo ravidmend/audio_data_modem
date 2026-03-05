@@ -63,14 +63,14 @@ class audio_to_text(gr.top_block, Qt.QWidget):
         ##################################################
         self.t = t = 0.01
         self.samp_rate = samp_rate = 32000
-        self.my_string = my_string = "why_are_you_gay?"*10
+        self.my_string = my_string = "abcde"*10
 
         ##################################################
         # Blocks
         ##################################################
 
         self.our_modem_postprocessor_0_0 = our_modem.postprocessor(t, samp_rate, 0.1, 0.333)
-        self.blocks_wavfile_source_0 = blocks.wavfile_source('why_are_you_gay_audio', True)
+        self.blocks_wavfile_source_0 = blocks.wavfile_source('abcde_10_audio', True)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_add_xx_0_0 = blocks.add_vcc(1)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
@@ -88,6 +88,7 @@ class audio_to_text(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_add_xx_0_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_add_xx_0_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_float_to_complex_0, 0))
+        self.connect((self.blocks_wavfile_source_0, 1), (self.blocks_float_to_complex_0, 1))
 
 
     def closeEvent(self, event):

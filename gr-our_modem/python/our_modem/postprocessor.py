@@ -47,7 +47,7 @@ class postprocessor(gr.sync_block):
             if len(peaks) != 0:
                 print(69)
                 starting_index = peaks[0]
-                starting_index = 320
+                # starting_index = 320
                 print(f"startingindex {starting_index}")
                 in0 = in0[starting_index:len(in0)]
                 self.detection_mode=False
