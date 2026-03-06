@@ -43,26 +43,21 @@ class postprocessor(gr.sync_block):
             correlation = np.correlate(in0, window, mode='full')
 
             peaks,_ = find_peaks(correlation,height = 0.15*sps*0.2)
-            # print(correlation[300:700])
+         
             if len(peaks) != 0:
-                print(69)
+               
                 starting_index = peaks[0]
-                # starting_index = 320
-                print(f"startingindex {starting_index}")
+               
                 in0 = in0[starting_index:len(in0)]
                 self.detection_mode=False
 
         if (self.detection_mode==False):
             self.queue.extend(in0)
-            # if (self.did_removed_preamble == False):
-            #     for i in range(sps):
-            #         self.queue.popleft()
-            #     self.did_removed_preamble = True
 
             while(len(self.queue) > (3 * sps)):
                 
                 dequeued_items = np.array([self.queue.popleft() for _ in range(3 * sps)])
-                bit = postprocessor.decide_bit(dequeued_items,sps)
+                bit = self.decide_bit(dequeued_items,sps)
                 self.bits.append(bit)
 
                 if (len(self.bits) == 8):
@@ -74,6 +69,14 @@ class postprocessor(gr.sync_block):
             
         return len(input_items[0])
     
+
+    def decide_bit(self, samples_array,sps): 
+        filtered_samples_array = postprocessor.noise_smoothing(samples_array,sps)
+        binary_arr = (filtered_samples_array>0).astype(int)
+        if(sum(binary_arr)>(self.sensitivity*sps)):
+            return 1
+        else:
+            return 0
 
 
     @staticmethod
@@ -88,14 +91,7 @@ class postprocessor(gr.sync_block):
         return output_str
 
         
-    @staticmethod
-    def decide_bit(samples_array,sps): 
-        filtered_samples_array = postprocessor.noise_smoothing(samples_array,sps)
-        binary_arr = (filtered_samples_array>0).astype(int)
-        if(sum(binary_arr)>(1.5*sps)):
-            return 1
-        else:
-            return 0
+    
 
     @staticmethod
     def noise_smoothing(samples_array,sps): 
