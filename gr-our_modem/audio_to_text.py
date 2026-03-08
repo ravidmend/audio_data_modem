@@ -11,8 +11,7 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
-from gnuradio import analog
-from gnuradio import blocks
+from gnuradio import audio
 from gnuradio import gr
 from gnuradio.filter import firdes
 from gnuradio.fft import window
@@ -22,7 +21,7 @@ from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import our_modem
+import sip
 
 
 
@@ -69,26 +68,31 @@ class audio_to_text(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self.our_modem_postprocessor_0_0 = our_modem.postprocessor(t, samp_rate, 0.1, 0.333)
-        self.blocks_wavfile_source_0 = blocks.wavfile_source('abcde_10_audio', True)
-        self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
-        self.blocks_add_xx_0_0 = blocks.add_vcc(1)
-        self.analog_wfm_rcv_0 = analog.wfm_rcv(
-        	quad_rate=samp_rate,
-        	audio_decimation=1,
+        self.qtgui_sink_x_0_0_0_0_0 = qtgui.sink_f(
+            1024, #fftsize
+            window.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "", #name
+            True, #plotfreq
+            True, #plotwaterfall
+            True, #plottime
+            True, #plotconst
+            None # parent
         )
-        self.analog_noise_source_x_0_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 1.5, 0)
+        self.qtgui_sink_x_0_0_0_0_0.set_update_time(1.0/10)
+        self._qtgui_sink_x_0_0_0_0_0_win = sip.wrapinstance(self.qtgui_sink_x_0_0_0_0_0.qwidget(), Qt.QWidget)
+
+        self.qtgui_sink_x_0_0_0_0_0.enable_rf_freq(False)
+
+        self.top_layout.addWidget(self._qtgui_sink_x_0_0_0_0_0_win)
+        self.audio_source_0_0 = audio.source(samp_rate, '', True)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_noise_source_x_0_0, 0), (self.blocks_add_xx_0_0, 1))
-        self.connect((self.analog_wfm_rcv_0, 0), (self.our_modem_postprocessor_0_0, 0))
-        self.connect((self.blocks_add_xx_0_0, 0), (self.analog_wfm_rcv_0, 0))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_add_xx_0_0, 0))
-        self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_float_to_complex_0, 0))
-        self.connect((self.blocks_wavfile_source_0, 1), (self.blocks_float_to_complex_0, 1))
+        self.connect((self.audio_source_0_0, 0), (self.qtgui_sink_x_0_0_0_0_0, 0))
 
 
     def closeEvent(self, event):
@@ -110,6 +114,7 @@ class audio_to_text(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.qtgui_sink_x_0_0_0_0_0.set_frequency_range(0, self.samp_rate)
 
     def get_my_string(self):
         return self.my_string

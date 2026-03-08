@@ -12,6 +12,7 @@
 from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio import analog
+from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
@@ -79,6 +80,7 @@ class text_to_audio(gr.top_block, Qt.QWidget):
             False
             )
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
+        self.audio_sink_0 = audio.sink(samp_rate, '', True)
         self.analog_wfm_tx_0 = analog.wfm_tx(
         	audio_rate=samp_rate,
         	quad_rate=samp_rate,
@@ -92,6 +94,8 @@ class text_to_audio(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.connect((self.analog_wfm_tx_0, 0), (self.blocks_complex_to_float_0, 0))
+        self.connect((self.blocks_complex_to_float_0, 1), (self.audio_sink_0, 1))
+        self.connect((self.blocks_complex_to_float_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_wavfile_sink_0, 1))
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.our_modem_preprocess_0, 0), (self.analog_wfm_tx_0, 0))

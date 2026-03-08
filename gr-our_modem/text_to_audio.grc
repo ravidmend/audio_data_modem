@@ -125,6 +125,23 @@ blocks:
     coordinate: [320, 248.0]
     rotation: 0
     state: enabled
+- name: audio_sink_0
+  id: audio_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: ''
+    num_inputs: '2'
+    ok_to_block: 'True'
+    samp_rate: samp_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 416.0]
+    rotation: 0
+    state: enabled
 - name: blocks_add_xx_0
   id: blocks_add_xx
   parameters:
@@ -460,7 +477,9 @@ connections:
 - [analog_wfm_tx_0, '0', blocks_complex_to_float_0, '0']
 - [analog_wfm_tx_0, '0', qtgui_sink_x_0_0_0, '0']
 - [blocks_add_xx_0, '0', analog_wfm_rcv_0, '0']
+- [blocks_complex_to_float_0, '0', audio_sink_0, '0']
 - [blocks_complex_to_float_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_complex_to_float_0, '1', audio_sink_0, '1']
 - [blocks_complex_to_float_0, '1', blocks_wavfile_sink_0, '1']
 - [blocks_throttle2_0, '0', analog_wfm_tx_0, '0']
 - [blocks_throttle2_0, '0', our_modem_postprocessor_0, '0']

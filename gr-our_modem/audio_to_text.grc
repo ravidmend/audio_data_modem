@@ -85,7 +85,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [752, 376.0]
+    coordinate: [816, 248.0]
     rotation: 0
     state: disabled
 - name: analog_noise_source_x_0_0
@@ -104,9 +104,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 600.0]
+    coordinate: [320, 336.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: analog_wfm_rcv_0
   id: analog_wfm_rcv
   parameters:
@@ -141,7 +141,45 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 240.0]
+    coordinate: [712, 96.0]
+    rotation: 0
+    state: disabled
+- name: audio_source_0
+  id: audio_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '2'
+    ok_to_block: 'True'
+    samp_rate: samp_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [88, 552.0]
+    rotation: 0
+    state: enabled
+- name: audio_source_0_0
+  id: audio_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '1'
+    ok_to_block: 'True'
+    samp_rate: samp_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 688.0]
     rotation: 0
     state: disabled
 - name: blocks_add_xx_0
@@ -159,7 +197,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [920, 256.0]
+    coordinate: [984, 128.0]
     rotation: 0
     state: disabled
 - name: blocks_add_xx_0_0
@@ -177,9 +215,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 560.0]
+    coordinate: [544, 448.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_complex_to_real_0
   id: blocks_complex_to_real
   parameters:
@@ -193,7 +231,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 280.0]
+    coordinate: [688, 152.0]
     rotation: 0
     state: disabled
 - name: blocks_float_to_complex_0
@@ -230,7 +268,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 360.0]
+    coordinate: [808, 112.0]
     rotation: 0
     state: disabled
 - name: blocks_wavfile_sink_0
@@ -252,7 +290,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [752, 80.0]
+    coordinate: [816, 0.0]
     rotation: 0
     state: disabled
 - name: blocks_wavfile_source_0
@@ -270,7 +308,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [72, 488.0]
+    coordinate: [80, 376.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -294,7 +332,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1128, 176.0]
+    coordinate: [880, 76.0]
     rotation: 0
     state: disabled
 - name: our_modem_postprocessor_0
@@ -311,7 +349,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [896, 504.0]
+    coordinate: [856, 128.0]
     rotation: 0
     state: disabled
 - name: our_modem_postprocessor_0_0
@@ -345,7 +383,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [632, 336.0]
+    coordinate: [696, 208.0]
     rotation: 0
     state: disabled
 - name: our_modem_preprocess_0
@@ -363,7 +401,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 312.0]
+    coordinate: [776, 80.0]
     rotation: 0
     state: disabled
 - name: qtgui_sink_x_0_0
@@ -392,7 +430,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1336, 200.0]
+    coordinate: [792, 56.0]
     rotation: 0
     state: disabled
 - name: qtgui_sink_x_0_0_0
@@ -421,7 +459,65 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1000, 456.0]
+    coordinate: [768, 112.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_sink_x_0_0_0_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: float
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 608.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_sink_x_0_0_0_0_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: float
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 664.0]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -518,7 +614,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1112, 408.0]
+    coordinate: [816, 152.0]
     rotation: 0
     state: disabled
 
@@ -528,12 +624,17 @@ connections:
 - [analog_wfm_rcv_0, '0', low_pass_filter_0, '0']
 - [analog_wfm_rcv_0, '0', our_modem_postprocessor_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_sink_x_0_0, '0']
+- [analog_wfm_rcv_0, '0', qtgui_sink_x_0_0_0_0, '0']
 - [analog_wfm_rcv_0, '0', qtgui_time_sink_x_0, '0']
 - [analog_wfm_tx_0, '0', blocks_complex_to_real_0, '0']
 - [analog_wfm_tx_0, '0', qtgui_sink_x_0_0_0, '0']
+- [audio_source_0, '0', blocks_float_to_complex_0, '0']
+- [audio_source_0, '1', blocks_float_to_complex_0, '1']
+- [audio_source_0_0, '0', qtgui_sink_x_0_0_0_0_0, '0']
 - [blocks_add_xx_0, '0', analog_wfm_rcv_0, '0']
 - [blocks_add_xx_0_0, '0', analog_wfm_rcv_0, '0']
 - [blocks_complex_to_real_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_float_to_complex_0, '0', analog_wfm_rcv_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_add_xx_0_0, '0']
 - [blocks_throttle2_0, '0', analog_wfm_tx_0, '0']
 - [blocks_throttle2_0, '0', our_modem_postprocessor_0, '0']
